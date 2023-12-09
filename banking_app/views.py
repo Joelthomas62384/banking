@@ -43,7 +43,7 @@ def home(request):
             for material_name in materials_provided:
                 material = Material.objects.create(name=material_name, user_profile=user_profile)
 
-            messages.success(request, "Accepted")
+            messages.success(request, "Your Request has been accepted")
         except Sub_Branches.DoesNotExist:
             messages.error(request, "Failed: Branch does not exist")
 
