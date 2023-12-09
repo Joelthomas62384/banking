@@ -1,0 +1,128 @@
+<div class="container mt-4">
+    <h2>User Registration</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group my-3">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group my-3">
+            <label for="phone_number">Phone Number</label>
+            <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+        </div>
+        <div class="form-group my-3">
+            <label for="mail_id">Mail ID</label>
+            <input type="email" class="form-control" id="mail_id" name="mail_id" required>
+        </div>
+        <div class="form-group my-3">
+            <label for="address">Address</label>
+            <textarea class="form-control" id="address" name="address" required></textarea>
+        </div>
+                        
+        <div class="form-group my-3">
+            <label for="dob">Date of Birth</label>
+            <input type="date" class="form-control" id="dob" name="dob" required>
+        </div>
+
+        <!-- Include other form fields for AGE, GENDER, PHONE NUMBER, MAIL ID, ADDRESS -->
+
+        <div class="form-group my-3">
+            <label for="district">District</label>
+            <select class="form-control" id="district" name="district" required>
+                <!-- Include options dynamically from Django view -->
+                
+                <option value="">Default</option>
+                {% for branch in branches %}
+                <option value="{{branch.id}}">{{branch.name}}</option>
+                {% endfor %}
+                
+                <!-- Add more districts as needed -->
+            </select>
+        </div>
+        
+        <div class="form-group my-3">
+            <label for="branch">Branch</label>
+            <select class="form-control" id="branch" name="branch" required>
+                <!-- Include options dynamically based on the selected district -->
+                <!-- This might require additional JavaScript -->
+                <option value="">Default</option>
+            </select>
+        </div>
+
+        <div class="form-group my-3">
+            <label for="account_type">Account Type</label>
+            <select class="form-control" id="account_type" name="account_type" required>
+                <option value="savings">Savings Account</option>
+                <option value="current">Current Account</option>
+                <!-- Add more account types as needed -->
+            </select>
+        </div>
+        <div class="form-group my-3">
+            <label for="gender">Gender</label>
+            <select class="form-control" id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <!-- Add more gender options if needed -->
+            </select>
+        </div>
+        
+        <div class="form-group my-3">
+            <label>Materials Provided</label><br>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="debit_card" name="materials_provided" value="debit_card">
+                <label class="form-check-label" for="debit_card">Debit Card</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="credit_card" name="materials_provided" value="credit_card">
+                <label class="form-check-label" for="credit_card">Credit Card</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="cheque_book" name="materials_provided" value="cheque_book">
+                <label class="form-check-label" for="cheque_book">Cheque Book</label>
+                <!-- Add more materials as needed -->
+            </div>
+        </div>
+        
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <!-- Add logout button or link based on your authentication setup -->
+
+    </form>
+</div>
+{% block scripts %}
+<script>
+    let district = document.getElementById("district");
+    let branch = document.getElementById("branch");
+
+    district.addEventListener("change", function () {
+        updateBranches();
+    });
+
+    function updateBranches() {
+        // Get selected district
+        var selectedDistrict = district.value;
+
+        // Clear existing options
+        branch.innerHTML = "";
+
+        // Make an AJAX request to fetch branches for the selected district using fetch
+        fetch(`/get_branches/${selectedDistrict}/`)
+            .then(response => response.json())
+            .then(data => {
+                var branches = data.branches;
+                console.log(branches)
+
+                // Populate branch options based on the fetched branches
+                branches.forEach(function(branchItem) {
+                    let option = document.createElement("option");
+                    option.value = branchItem;
+                    option.text = branchItem;
+                    branch.add(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+{% endblock scripts %}

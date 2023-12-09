@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container my-5">
+    <h1>Register</h1>
+    <form action="{% url "register" %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label> <span class=" text-danger"id="error-user"></span>
+            <input type="text" name="username" class="form-control" id="username" placeholder="username">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="username" class="form-control" id="password" placeholder="Password">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Confirm Password</label> <span class=" text-danger"id="error-text"></span>
+            <input type="password" name="username" class="form-control" id="Confirmpassword" placeholder="Password">
+          </div>
+          
+          <button type="submit" id="submitbutton" class="btn btn-primary">Submit</button> 
+          <br>
+          <br>
+          <a href="{% url "login" %}" style="text-decoration:none;">Login Here -></a>
+    </form>
+     
+</div>
+
+{% block scripts %}
+
+<script type="text/javascript">
+let errorText = document.getElementById("error-text")
+let errorUser = document.getElementById("error-user")
+let password = document.getElementById('password')
+let confirmPassword = document.getElementById('Confirmpassword')
+let usernameInput = document.getElementById("username")
+let submitbutton = document.getElementById("submitbutton")
+
+
+confirmPassword.addEventListener('input',()=>{
+    if (password.value !== confirmPassword.value){
+        errorText.innerText = "The Password Doesn't match"
+        submitbutton.disabled = true
+    }else{
+        errorText.innerText = ""
+        submitbutton.disabled = false
+
+    }
+})
+
+usernameInput.addEventListener('input', () => {
+            let username = usernameInput.value;
+
+            if (username.length<=3){
+                errorUser.innerText = "Username is too short";
+                submitbutton.disabled = true
+
+            }
+            else{
+            submitbutton.disabled = false
+                
+            }
+
+            
+            fetch(`/get_user/${username}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        errorUser.innerText = "Username already exists";
+                        submitbutton.disabled = true
+
+                    } else {
+                        errorUser.innerText = "";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+</script>
+{% endblock scripts %}
+{% endblock content %}
