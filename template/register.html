@@ -4,7 +4,7 @@
 
 <div class="container my-5">
     <h1>Register</h1>
-    <form action="{% url "register" %}" method="post">
+    <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
         <div class="mb-3">
             <label for="username" class="form-label">Username</label> <span class=" text-danger"id="error-user"></span>
@@ -12,11 +12,11 @@
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" name="username" class="form-control" id="password" placeholder="Password">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Password">
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Confirm Password</label> <span class=" text-danger"id="error-text"></span>
-            <input type="password" name="username" class="form-control" id="Confirmpassword" placeholder="Password">
+            <input type="password" name="password" class="form-control" id="Confirmpassword" placeholder="Password">
           </div>
           
           <button type="submit" id="submitbutton" class="btn btn-primary">Submit</button> 

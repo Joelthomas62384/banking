@@ -10,6 +10,15 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url="register")
 def home(request):
+    
+
+    context = {
+        "branches": Branches.objects.all()
+    }
+    return render(request, "index.html", context)
+
+
+def formpage(request):
     if request.method == "POST":
         name = request.POST.get("name")
         dob = request.POST.get("dob")
@@ -44,29 +53,28 @@ def home(request):
                 material = Material.objects.create(name=material_name, user_profile=user_profile)
 
             messages.success(request, "Your Request has been accepted")
+            return redirect("home")
         except Sub_Branches.DoesNotExist:
             messages.error(request, "Failed: Branch does not exist")
 
     context = {
         "branches": Branches.objects.all()
     }
-    return render(request, "index.html", context)
+    return render(request, "formPage.html", context)
 
 
 def login_page(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        print("done this much")
-        print(username)
-        print(password)
+        
         user = authenticate(request, username=username, password=password)
         print(user)
         if user is not None:
             login(request,user)
             print("Login successfull")
             messages.success(request, 'User login successfully!')
-            return redirect("home")
+            return redirect("formpage")
     context = {
         "branches":Branches.objects.all()
     }
